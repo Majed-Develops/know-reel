@@ -1,7 +1,14 @@
 {
+<<<<<<< HEAD
   "name": "islamic-reels",
   "version": "0.0.1",
   "private": true,
+=======
+  "name": "know-reel",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Know Reel prototype built with Svelte (Vite).",
+>>>>>>> bcdfe73c3985c68cca8b9b36205fac2571a40cf2
   "type": "module",
   "scripts": {
     "dev": "vite",
