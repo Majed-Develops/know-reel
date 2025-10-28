@@ -15,9 +15,9 @@
   let pressTimer;
   let homeHeld = false;
   function onHomeDown() {
+    clearTimeout(pressTimer);
+    homeHeld = false;
     if ($ui.homeToggle === 'hold') {
-      clearTimeout(pressTimer);
-      homeHeld = false;
       pressTimer = setTimeout(() => {
         homeHeld = true;
         ui.update(s => ({ ...s, homeMode: s.homeMode === 'watch' ? 'hadith' : 'watch' }));
@@ -26,9 +26,13 @@
   }
   function onHomeUp() {
     clearTimeout(pressTimer);
-    if (!$ui.homeToggle || $ui.homeToggle === 'default') return;
-    // When touch is released without holding, treat as tap to select
-    if (!homeHeld) { select('home'); }
+    // If hold mode is enabled and we didn't reach hold threshold, it's a tap
+    // If hold mode is disabled (default), always treat as tap
+    if ($ui.homeToggle === 'hold') {
+      if (!homeHeld) select('home');
+    } else {
+      select('home');
+    }
     homeHeld = false;
   }
 </script>
@@ -54,7 +58,7 @@
         on:mousedown={onHomeDown}
         on:mouseup={onHomeUp}
         on:mouseleave={onHomeUp}
-        on:touchstart|preventDefault={onHomeDown}
+        on:touchstart={onHomeDown}
         on:touchend={onHomeUp}
         on:touchcancel={onHomeUp}>
           <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
@@ -96,6 +100,7 @@
     width: 100%;
     border-bottom-left-radius: 18px;
     border-bottom-right-radius: 18px;
+    z-index: 20; /* sit above content so taps are not intercepted */
   }
   .tab {
     display: grid;

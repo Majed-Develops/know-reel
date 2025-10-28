@@ -13,7 +13,8 @@
   const go = (id) => navigate(id);
 
   onMount(() => {
-    if (!location.hash) navigate('home');
+    const hash = (location.hash || '').replace(/^#\/?/, '').trim();
+    if (!hash) navigate('home');
   });
 </script>
 

@@ -35,8 +35,12 @@
   h2 { font-size: 14px; color: var(--muted); margin: 0; }
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chip {
-    background: #15181a; color: var(--fg); border: 1px solid var(--border);
-    border-radius: 999px; padding: 8px 12px; font-size: 13px;
+    background: var(--card);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: 13px;
   }
   .chip:active { border-color: var(--accent); color: var(--accent); }
 </style>
