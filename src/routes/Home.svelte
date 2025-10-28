@@ -1,6 +1,7 @@
 <script>
   import { ui } from '../lib/stores/ui.js';
   import { fly } from 'svelte/transition';
+  import VideoReel from '../components/VideoReel.svelte';
   $: mode = $ui.homeMode; // 'watch' | 'hadith'
   $: holdToggle = $ui.homeToggle === 'hold';
   let dirX = 0; let lastMode = mode;
@@ -17,6 +18,15 @@
     { id: 2, text: '“Let him speak good or remain silent.” — Bukhari' },
     { id: 3, text: '“Strong is the one who controls anger.” — Bukhari & Muslim' }
   ];
+  // Prototype reel sources. Place files under /public/videos/
+  const reels = [
+    { id: 1, src: '/videos/1.mp4' },
+    { id: 2, src: '/videos/2.mp4' },
+    { id: 3, src: '/videos/3.mp4' },
+    { id: 4, src: '/videos/4.mp4' }
+  ];
+  let activeId = null;
+  let globalMuted = true;
 </script>
 
 {#if !holdToggle}
@@ -30,34 +40,16 @@
 
 {#if mode === 'watch'}
   <section class="feed" class:compact={holdToggle} transition:fly={{ x: dirX, duration: 220 }}>
-    {#each videos as v}
+    {#each reels as r}
       <article class="card">
-        <div class="video" aria-label={'Video ' + v.id}>
-          <span class="badge">{v.duration}</span>
-        </div>
-        <div class="meta">
-          <div class="title">{v.title}</div>
-          <div class="sub">{v.author}</div>
-        </div>
-        <div class="actions">
-          <button class="icon" aria-label="Like">
-            <svg viewBox="0 0 24 24" width="22" height="22">
-              <path d="M12 21s-6-4.4-8.5-7C1.5 11 3 6.5 7 6.5c2 0 3.2 1.2 5 3 1.8-1.8 3-3 5-3 4 0 5.5 4.5 3.5 7.5C18 16.6 12 21 12 21z"
-                fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </button>
-          <button class="icon" aria-label="Download">
-            <svg viewBox="0 0 24 24" width="22" height="22">
-              <path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 21h16" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          </button>
-          <span class="spacer" />
-          <button class="icon" aria-label="Bookmark">
-            <svg viewBox="0 0 24 24" width="22" height="22">
-              <path d="M6 4h12v17l-6-3-6 3V4z" fill="none" stroke="var(--accent)" stroke-width="2" />
-            </svg>
-          </button>
-        </div>
+        <VideoReel
+          id={r.id}
+          src={r.src}
+          {activeId}
+          muted={globalMuted}
+          on:active={(e) => activeId = e.detail.id}
+          on:mutetoggle={(e) => globalMuted = e.detail.muted}
+        />
       </article>
     {/each}
   </section>
@@ -121,6 +113,8 @@
   .spacer { flex: 1; }
   .icon { background: transparent; border: none; padding: 6px; border-radius: 8px; }
   .icon:active { background: #15181a; }
+
+  /* No custom feed scroller here; we use .content scroll which hides bars */
 
   .list { padding: 68px 10px 10px; display: grid; gap: 0; }
   .list.compact { padding: 10px; }
