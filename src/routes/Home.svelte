@@ -27,6 +27,18 @@
   ];
   let activeId = null;
   let globalMuted = true;
+  let liked = new Set();
+  let saved = new Set();
+
+  const toggleValue = (set, id) => {
+    const next = new Set(set);
+    if (next.has(id)) next.delete(id); else next.add(id);
+    return next;
+  };
+  const toggleLike = (id) => { liked = toggleValue(liked, id); };
+  const toggleSave = (id) => { saved = toggleValue(saved, id); };
+  const isLiked = (id) => liked.has(id);
+  const isSaved = (id) => saved.has(id);
 </script>
 
 {#if !holdToggle}
@@ -50,6 +62,39 @@
           on:active={(e) => activeId = e.detail.id}
           on:mutetoggle={(e) => globalMuted = e.detail.muted}
         />
+
+        <div class="actions">
+          <button class="icon" aria-label="Like"
+                  class:active={isLiked(r.id)}
+                  on:click={() => toggleLike(r.id)}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M12 21s-6-4.4-8.5-7C1.5 11 3 6.5 7 6.5c2 0 3.2 1.2 5 3 1.8-1.8 3-3 5-3 4 0 5.5 4.5 3.5 7.5C18 16.6 12 21 12 21z"
+                    fill={isLiked(r.id) ? 'var(--accent)' : 'none'}
+                    stroke={isLiked(r.id) ? 'var(--accent)' : 'var(--accent)'}
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+
+          <a class="icon" aria-label="Download" href={r.src} download>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M12 3v12m0 0l4-4m-4 4l-4-4M4 21h16"
+                    fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </a>
+
+          <span class="spacer" />
+
+          <button class="icon" aria-label="Bookmark"
+                  class:active={isSaved(r.id)}
+                  on:click={() => toggleSave(r.id)}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M6 4h12v17l-6-3-6 3V4z"
+                    fill={isSaved(r.id) ? 'var(--accent)' : 'none'}
+                    stroke={isSaved(r.id) ? 'var(--accent)' : 'var(--accent)'}
+                    stroke-width="2" />
+            </svg>
+          </button>
+        </div>
       </article>
     {/each}
   </section>

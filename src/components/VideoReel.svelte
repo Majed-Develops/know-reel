@@ -24,6 +24,8 @@
   let scrubbing = false;
   let wasPlaying = false;
   let rafId;
+  let startX = 0, startY = 0;
+  const MOVE_CANCEL_PX = 12; // cancel tap if user scrolls/drags more than this
 
   function startRaf() {
     stopRaf();
@@ -53,10 +55,13 @@
     dispatch('mutetoggle', { muted: next, id });
   }
 
-  function onPointerDown() {
+  function onPointerDown(e) {
     clearTimeout(holdTimer);
     holding = false;
     pressing = true;
+    const t = e.touches?.[0] ?? e;
+    startX = t.clientX ?? 0;
+    startY = t.clientY ?? 0;
     holdTimer = setTimeout(() => {
       holding = true;
       if (video) video.pause();
@@ -79,6 +84,19 @@
     clearTimeout(holdTimer);
     holding = false;
     pressing = false;
+  }
+
+  function onPointerMove(e) {
+    if (!pressing || scrubbing) return;
+    const t = e.touches?.[0] ?? e;
+    const dx = (t.clientX ?? 0) - startX;
+    const dy = (t.clientY ?? 0) - startY;
+    if (Math.abs(dx) > MOVE_CANCEL_PX || Math.abs(dy) > MOVE_CANCEL_PX) {
+      // Consider it a scroll/drag; cancel tap/hold so release won't toggle mute
+      clearTimeout(holdTimer);
+      holding = false;
+      pressing = false;
+    }
   }
 
   let progressEl;
@@ -189,7 +207,9 @@
   on:pointerup={onPointerUp}
   on:pointercancel={onCancel}
   on:mouseleave={onCancel}
-  on:touchstart|preventDefault
+  on:touchstart={onPointerDown}
+  on:touchmove={onPointerMove}
+  on:pointermove={onPointerMove}
   on:touchcancel={onCancel}
 >
   <div class="frame" bind:this={frame}>
