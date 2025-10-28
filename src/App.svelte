@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { route, navigate } from './lib/router.js';
   import { theme } from './lib/stores/theme.js';
   import Home from './routes/Home.svelte';
@@ -10,6 +11,10 @@
 
   $: current = $route;
   const go = (id) => navigate(id);
+
+  onMount(() => {
+    if (!location.hash) navigate('home');
+  });
 </script>
 
 <div class="phone">

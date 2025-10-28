@@ -13,15 +13,24 @@
 
   function select(id) { dispatch('select', id); }
   let pressTimer;
+  let homeHeld = false;
   function onHomeDown() {
     if ($ui.homeToggle === 'hold') {
       clearTimeout(pressTimer);
+      homeHeld = false;
       pressTimer = setTimeout(() => {
+        homeHeld = true;
         ui.update(s => ({ ...s, homeMode: s.homeMode === 'watch' ? 'hadith' : 'watch' }));
       }, 500);
     }
   }
-  function onHomeUp() { clearTimeout(pressTimer); }
+  function onHomeUp() {
+    clearTimeout(pressTimer);
+    if (!$ui.homeToggle || $ui.homeToggle === 'default') return;
+    // When touch is released without holding, treat as tap to select
+    if (!homeHeld) { select('home'); }
+    homeHeld = false;
+  }
 </script>
 
 <nav class="nav">
@@ -38,18 +47,16 @@
           </svg>
         </div>
       </button>
-    {:else}
+    {:else if t.id === 'home'}
       <button
         class="tab {current === t.id ? 'active' : ''}"
         aria-label={t.label}
-        on:click={() => select(t.id)}
         on:mousedown={onHomeDown}
         on:mouseup={onHomeUp}
         on:mouseleave={onHomeUp}
         on:touchstart|preventDefault={onHomeDown}
         on:touchend={onHomeUp}
         on:touchcancel={onHomeUp}>
-        {#if t.id === 'home'}
           <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
             {#if current === 'home'}
               <path d="M3 10.5 12 3 21 10.5V21H14V14H10V21H3Z" fill="var(--nav-icon-active)"/>
@@ -57,7 +64,12 @@
               <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" fill="none" stroke="var(--nav-icon)" stroke-width="2" stroke-linejoin="round"/>
             {/if}
           </svg>
-        {:else}
+      </button>
+    {:else}
+      <button
+        class="tab {current === t.id ? 'active' : ''}"
+        aria-label={t.label}
+        on:click={() => select(t.id)}>
           <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
             {#if current === 'profile'}
               <circle cx="12" cy="8" r="4" fill="var(--nav-icon-active)"/>
@@ -67,11 +79,10 @@
               <path d="M4 21c1.8-3.5 5-5 8-5s6.2 1.5 8 5" fill="none" stroke="var(--nav-icon)" stroke-width="2" stroke-linecap="round"/>
             {/if}
           </svg>
-        {/if}
       </button>
     {/if}
   {/each}
-</nav>
+  </nav>
 
 <style>
   .nav {
