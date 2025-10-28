@@ -36,7 +36,7 @@
 <style>
   .phone {
     max-width: 440px;
-    height: 100vh;
+    height: 100vh; /* fallback */
     margin: 0 auto;
     display: grid;
     grid-template-rows: 1fr auto;
@@ -44,6 +44,13 @@
     border: 1px solid var(--border);
     border-radius: 18px;
     overflow: hidden;
+  }
+  /* Prefer dynamic viewport units on modern browsers to avoid mobile 100vh issues */
+  @supports (height: 100dvh) {
+    .phone { height: 100dvh; }
+  }
+  @supports (height: 100svh) {
+    .phone { height: 100svh; }
   }
   .content {
     overflow-y: auto;
