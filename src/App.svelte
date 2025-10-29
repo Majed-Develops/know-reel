@@ -37,7 +37,6 @@
       </div>
     {/key}
   </main>
-
 </div>
 
 <style>
@@ -48,10 +47,9 @@
     display: grid;
     grid-template-rows: 1fr;
     background: var(--bg);
-    border-radius: 18px;
+    border-radius: 0 0 18px 18px; /* square top corners, rounded bottom */
     overflow: hidden;
-    /* Thin black bezel frame for desktop/PC view */
-    border: 2px solid #000;
+    /* No bezel; frame element handles outer background */
   }
   /* Prefer dynamic viewport units on modern browsers to avoid mobile 100vh issues */
   @supports (height: 100dvh) {
