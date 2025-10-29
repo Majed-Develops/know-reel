@@ -61,6 +61,14 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
+  /* Enable vertical scroll snap only when reels feed exists */
+  .content:has(.reels) {
+    scroll-snap-type: y proximity;
+    /* account for sticky headers while snapping */
+    scroll-padding-top: 72px;
+    scroll-padding-bottom: 16px;
+    overscroll-behavior-y: contain;
+  }
   .content::-webkit-scrollbar { display: none; }
   
 </style>

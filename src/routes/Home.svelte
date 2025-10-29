@@ -146,6 +146,11 @@
   .menu-wrap { position: absolute; right: 0; top: 0; }
   .click-capture { position: fixed; inset: 0; z-index: 10; }
   .feed { padding: 20px 10px 10px; display: grid; gap: 12px; }
+  /* Make each reel card a snap point for vertical scroll */
+  .reels > .card {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
   .card {
     background: transparent;
     border: none;
