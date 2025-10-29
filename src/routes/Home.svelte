@@ -1,19 +1,10 @@
 <script>
-  import { ui } from '../lib/stores/ui.js';
   import { nav } from '../lib/stores/nav.js';
   import { fly } from 'svelte/transition';
   import VideoReel from '../components/VideoReel.svelte';
   import ProfileMenu from '../components/ProfileMenu.svelte';
   import SalahStatus from '../components/SalahStatus.svelte';
-  $: mode = $ui.homeMode; // 'watch' | 'hadith'
-  let dirX = 0; let lastMode = mode;
-  function setMode(m) {
-    if (m !== mode) {
-      dirX = (m === 'hadith' ? 40 : -40);
-      ui.update(s => ({ ...s, homeMode: m }));
-    }
-  }
-  $: if (mode !== lastMode) { dirX = (mode === 'hadith' ? 40 : -40); lastMode = mode; }
+  
   const videos = Array.from({ length: 4 }).map((_, i) => ({ id: i + 1, title: 'Islamic Reminder', author: 'Ustadh • @channel', duration: '1:23' }));
   const ahadith = [
     { id: 1, text: '“Actions are judged by intentions...” — Bukhari & Muslim' },
@@ -75,8 +66,7 @@
   <div class="click-capture" on:click={() => { showProfile = false; showSalah = false; }} />
 {/if}
 
-{#if mode === 'watch'}
-  <section class="feed" transition:fly={{ x: dirX, duration: 220 }}>
+  <section class="feed">
     {#each reels as r}
       <article class="card">
         <VideoReel
@@ -112,34 +102,6 @@
       </article>
     {/each}
   </section>
-{:else}
-  <section class="list" transition:fly={{ x: dirX, duration: 220 }}>
-    {#each ahadith as h}
-      <article class="hadith">
-        <div class="quote">
-          <svg class="quote-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-            <path d="M7 11c0-3.866 3.134-7 7-7v3c-2.209 0-4 1.791-4 4h4v7H7v-7zm-6 0C1 7.134 4.134 4 8 4v3C5.791 7 4 8.791 4 11h4v7H1v-7z" fill="var(--icon)" opacity="0.25"/>
-          </svg>
-          <p class="text">{h.text}</p>
-        </div>
-        <div class="actions">
-          <button class="icon" aria-label="Share">
-            <svg viewBox="0 0 24 24" width="22" height="22">
-              <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 7l-4-4-4 4M12 3v13"
-                fill="none" stroke="var(--icon)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <span class="spacer" />
-          <button class="icon" aria-label="Bookmark">
-            <svg viewBox="0 0 24 24" width="22" height="22">
-              <path d="M6 4h12v17l-6-3-6 3V4z" fill="none" stroke="var(--action-icon)" stroke-width="2" />
-            </svg>
-          </button>
-        </div>
-      </article>
-    {/each}
-  </section>
-{/if}
 
 {#if showActivity}
   <div class="overlay" on:click={() => showActivity = false}>

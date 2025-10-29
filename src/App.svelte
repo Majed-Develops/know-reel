@@ -5,7 +5,6 @@
   import { fly } from 'svelte/transition';
   import { theme } from './lib/stores/theme.js';
   import Home from './routes/Home.svelte';
-  import Hadith from './routes/Hadith.svelte';
   import Settings from './routes/Settings.svelte';
 
   $: current = $route;
@@ -27,8 +26,6 @@
       >
         {#if current === 'home'}
           <Home />
-        {:else if current === 'hadith'}
-          <Hadith />
         {:else if current === 'settings'}
           <Settings themeStore={theme} />
         {:else}
