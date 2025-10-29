@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 const KEY = 'knowreel.theme';
 
 function getInitial() {
-  try { return localStorage.getItem(KEY) || 'dark'; } catch { return 'dark'; }
+  try { return localStorage.getItem(KEY) || 'light'; } catch { return 'light'; }
 }
 
 export const theme = writable(getInitial());

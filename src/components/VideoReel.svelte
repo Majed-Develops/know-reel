@@ -278,14 +278,19 @@
     position: absolute;
     left: 0; right: 0; bottom: 0;
     height: 3px;
-    background: rgba(255,255,255,0.9); /* unfinished portion */
+    background: var(--border); /* track */
     pointer-events: auto;
   }
   .progress-fill {
     height: 100%;
     width: 0%;
-    background: var(--accent); /* green in dark, brown in light */
+    background: var(--nav-bg); /* default; overridden for light theme below */
     transition: width .06s linear;
+  }
+  /* Light mode: make fill match profile icon color and add shadows for visibility */
+  :global(html[data-theme="light"]) .progress-fill {
+    background: var(--icon);
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.22), 0 0 4px rgba(0,0,0,0.18);
   }
   /* Apply elevated contrast only during active click/drag (no hover) */
   .progress.active {

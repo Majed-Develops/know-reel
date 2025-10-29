@@ -1,15 +1,15 @@
 <script>
   import { onMount } from 'svelte';
   import { route, navigate } from './lib/router.js';
+  import { nav } from './lib/stores/nav.js';
+  import { fly } from 'svelte/transition';
   import { theme } from './lib/stores/theme.js';
   import Home from './routes/Home.svelte';
   import Hadith from './routes/Hadith.svelte';
   import Settings from './routes/Settings.svelte';
-  import Search from './routes/Search.svelte';
-  import Profile from './routes/Profile.svelte';
-  import BottomNav from './components/BottomNav.svelte';
 
   $: current = $route;
+  $: dir = $nav; // 'neutral' | 'forward' | 'back'
   const go = (id) => navigate(id);
 
   onMount(() => {
@@ -20,23 +20,24 @@
 
 <div class="phone">
   <main class="content">
-    {#if current === 'home'}
-      <Home />
-    {:else if current === 'hadith'}
-      <Hadith />
-    {:else if current === 'search'}
-      <Search />
-    {:else if current === 'profile'}
-      <Profile />
-    {:else if current === 'settings'}
-      <Settings themeStore={theme} />
-    {:else}
-      <Home />
-    {/if}
+    {#key current}
+      <div class="route"
+        in:fly={dir === 'back' ? { x: -80, duration: 260, opacity: 0 } : (dir === 'forward' ? { x: 80, duration: 260, opacity: 0 } : undefined)}
+        out:fly={dir === 'back' ? { x: 80, duration: 220, opacity: 0 } : (dir === 'forward' ? { x: -80, duration: 220, opacity: 0 } : undefined)}
+      >
+        {#if current === 'home'}
+          <Home />
+        {:else if current === 'hadith'}
+          <Hadith />
+        {:else if current === 'settings'}
+          <Settings themeStore={theme} />
+        {:else}
+          <Home />
+        {/if}
+      </div>
+    {/key}
   </main>
 
-  <BottomNav {current} on:select={(e) => go(e.detail)} />
-  
 </div>
 
 <style>
@@ -45,11 +46,12 @@
     height: 100vh; /* fallback */
     margin: 0 auto;
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: 1fr;
     background: var(--bg);
-    border: 1px solid var(--border);
     border-radius: 18px;
     overflow: hidden;
+    /* Thin black bezel frame for desktop/PC view */
+    border: 2px solid #000;
   }
   /* Prefer dynamic viewport units on modern browsers to avoid mobile 100vh issues */
   @supports (height: 100dvh) {

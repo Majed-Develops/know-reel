@@ -5,8 +5,8 @@
 <section class="wrap">
   <div class="search">
     <svg viewBox="0 0 24 24" width="18" height="18">
-      <circle cx="11" cy="11" r="6" fill="none" stroke="var(--accent)" stroke-width="2" />
-      <path d="M20 20l-3.5-3.5" stroke="var(--accent)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="11" cy="11" r="6" fill="none" stroke="var(--icon)" stroke-width="2" />
+      <path d="M20 20l-3.5-3.5" stroke="var(--icon)" stroke-width="2" stroke-linecap="round"/>
     </svg>
     <input placeholder="Search topics, videos, hadith..." />
   </div>

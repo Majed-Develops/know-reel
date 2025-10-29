@@ -1,36 +1,46 @@
 :root {
-  --bg: darkslategrey;
-  --outer-bg: #0c1616; /* darker shell around phone */
-  --fg: #e6e7eb;
-  --muted: #a0a4ae;
-  --card: #151922;
-  --border: #252a36;
-  --accent: #22c55e; /* lighter green that suits darkslategrey */
-  --accent-dark: #0e7a2f; /* active green */
-  --accent-contrast: #ffffff;
-  --danger: #e45757;
-  --nav-bg: #3e5f5f; /* lighter than darkslategrey for navbar */
-  --nav-icon: var(--accent);
-  --nav-icon-active: var(--accent); /* in dark mode, same as icon color */
-}
-
-html[data-theme="light"] {
+  /* Light mode defaults (dark mode kept but mirrors light until later) */
   --bg: #ffffff;
+  --outer-bg: #ffffff;
   --fg: #1c2127;
   --muted: #5f6b7a;
   --card: #f6f8fb;
   --border: #dce2ea;
-  --accent: #8b4513; /* brown to match nav icons */
-  --accent-dark: #5a2f0c; /* darker brown for active */
+  --accent: #8b4513; /* buttons */
+  --accent-dark: #5a2f0c;
   --accent-contrast: #ffffff;
   --danger: #c0392b;
-  --nav-bg: #fa8072; /* salmon */
-  --nav-icon: #8b4513; /* brown icons */
-  --nav-icon-active: #5a2f0c; /* darker brown for active fills */
+  /* Nav and icon palette (light) */
+  --nav-bg: bisque;
+  --menu-bg: #e1c3a5; /* slightly darker than nav for dropdowns */
+  --icon: chocolate;
+  --icon-active: #8b4513; /* chocolate brown */
+  --action-icon: sandybrown; /* like/download/bookmark colors */
+  --action-icon-active: sandybrown;
+  --nav-icon: chocolate;
+  --nav-icon-active: #8b4513;
+}
+
+html[data-theme="light"] {
+  /* Mirror root for now */
+  --bg: var(--bg);
+}
+
+/* Light mode active button styling */
+html[data-theme="light"] button.active,
+html[data-theme="light"] button:active:not(.icon) {
+  background: chocolate;
+  color: var(--nav-bg);
+  border-color: chocolate;
+}
+html[data-theme="light"] button:hover:not(.icon) {
+  background: chocolate;
+  color: var(--nav-bg);
+  border-color: chocolate;
 }
 
 /* Light mode: remove phone border to avoid light edge around nav */
-html[data-theme="light"] .phone { border: none; }
+/* Keep thin phone border in light mode */
 
 * { box-sizing: border-box; }
 html, body, #app { height: 100%; }

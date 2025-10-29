@@ -1,6 +1,5 @@
 <script>
   import { createEventDispatcher } from 'svelte';
-  import { ui } from '../lib/stores/ui.js';
 
   export let current = 'home';
   const dispatch = createEventDispatcher();
@@ -12,29 +11,8 @@
   ];
 
   function select(id) { dispatch('select', id); }
-  let pressTimer;
-  let homeHeld = false;
-  function onHomeDown() {
-    clearTimeout(pressTimer);
-    homeHeld = false;
-    if ($ui.homeToggle === 'hold') {
-      pressTimer = setTimeout(() => {
-        homeHeld = true;
-        ui.update(s => ({ ...s, homeMode: s.homeMode === 'watch' ? 'hadith' : 'watch' }));
-      }, 500);
-    }
-  }
-  function onHomeUp() {
-    clearTimeout(pressTimer);
-    // If hold mode is enabled and we didn't reach hold threshold, it's a tap
-    // If hold mode is disabled (default), always treat as tap
-    if ($ui.homeToggle === 'hold') {
-      if (!homeHeld) select('home');
-    } else {
-      select('home');
-    }
-    homeHeld = false;
-  }
+  function onHomeDown() {}
+  function onHomeUp() { select('home'); }
 </script>
 
 <nav class="nav">

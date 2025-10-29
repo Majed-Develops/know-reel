@@ -11,7 +11,6 @@ function getInitial() {
 }
 
 const defaults = {
-  homeToggle: 'default', // 'default' | 'hold'
   homeMode: 'watch' // 'watch' | 'hadith'
 };
 
