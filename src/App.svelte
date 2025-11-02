@@ -44,7 +44,7 @@
 </script>
 
 <div class="phone">
-  <main class="content">
+  <main class="content" class:snappy={current === 'home'}>
     {#key current}
       <div class="route">
         {#if current === 'home'}
@@ -119,12 +119,9 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
-  /* Enable vertical scroll snap only when reels feed exists */
-  .content:has(.reels) {
-    scroll-snap-type: y proximity;
-    /* account for sticky headers while snapping */
-    scroll-padding-top: 72px;
-    scroll-padding-bottom: 16px;
+  /* Enable vertical scroll snap on Home */
+  .content.snappy {
+    scroll-snap-type: y mandatory;
     overscroll-behavior-y: contain;
   }
   .content::-webkit-scrollbar { display: none; }
