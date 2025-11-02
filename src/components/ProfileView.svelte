@@ -69,15 +69,9 @@
       type="button"
       on:click={toggleSettings}
     >
-      <svg viewBox="0 0 24 24">
-        <path
-          d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7m7.5 3.5a2.1 2.1 0 0 0-.05-.42l2.14-1.67-2-3.46-2.6.56a2 2 0 0 0-.72-.42l-.39-2.64H8.12l-.39 2.64a2 2 0 0 0-.72.42l-2.6-.56-2 3.46 2.14 1.67a2 2 0 0 0 0 .84L2.41 14.6l2 3.46 2.6-.56a2 2 0 0 0 .72.42l.39 2.64h5.56l.39-2.64a2 2 0 0 0 .72-.42l2.6.56 2-3.46-2.14-1.67a2.1 2.1 0 0 0 .05-.42"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.4"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M19.4 15a2 2 0 0 0 0-6l1.2-2.1-2-3.5-2.4.5a6 6 0 0 0-1.2-.7L14.6 1h-5.2l-.4 2.2a6 6 0 0 0-1.2.7l-2.4-.5-2 3.5L4.6 9a2 2 0 0 0 0 6l-1.2 2.1 2 3.5 2.4-.5a6 6 0 0 0 1.2.7l.4 2.2h5.2l.4-2.2c.4-.2.8-.4 1.2-.7l2.4.5 2-3.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
       </svg>
       Settings
     </button>

@@ -1,46 +1,50 @@
 :root {
-  /* Light mode defaults (dark mode kept but mirrors light until later) */
-  --bg: #ffffff;
-  --outer-bg: #ffffff;
-  --fg: #1c2127;
-  --muted: #5f6b7a;
-  --card: #f6f8fb;
-  --border: #dce2ea;
-  --accent: #8b4513; /* buttons */
-  --accent-dark: #5a2f0c;
-  --accent-contrast: #ffffff;
-  --danger: #c0392b;
-  /* Nav and icon palette (light) */
-  --nav-bg: bisque;
-  --menu-bg: #e1c3a5; /* slightly darker than nav for dropdowns */
-  --icon: chocolate;
-  --icon-active: #8b4513; /* chocolate brown */
-  --action-icon: sandybrown; /* like/download/bookmark colors */
-  --action-icon-active: sandybrown;
-  --nav-icon: chocolate;
-  --nav-icon-active: #8b4513;
+  /* Dark theme (default) */
+  --bg: #000000;
+  --outer-bg: #000000;
+  --fg: #f2f2f2;
+  --muted: #a2a2a2;
+  --card: #121212;
+  --border: #222222;
+  --accent: #ffffff; /* keep minimal accent */
+  --accent-dark: #e5e5e5;
+  --accent-contrast: #000000;
+  --danger: #e74c3c;
+  --icon: #ffffff;
+  --action-icon: var(--icon);
+  --action-icon-active: var(--icon);
+  --nav-bg: #000000;
+  --menu-bg: #121212;
+  --nav-active-circle-bg: #ffffff; /* dark: white circle */
+  --nav-active-icon: #000000;      /* dark: black icon on white */
+  /* Add button fills (dark theme default): inactive black fill, active white fill */
+  --add-inactive-bg: #000000;
+  --add-inactive-icon: #ffffff;
+  --add-active-bg: #ffffff;
+  --add-active-icon: #000000;
 }
 
 html[data-theme="light"] {
-  /* Mirror root for now */
-  --bg: var(--bg);
+  /* Light theme overrides */
+  --bg: #ffffff;
+  --outer-bg: #ffffff;
+  --fg: #111111;
+  --muted: #5f6b7a;
+  --card: #ffffff;
+  --border: #e6e6e6;
+  --icon: #000000;
+  --action-icon: var(--icon);
+  --action-icon-active: var(--icon);
+  --nav-bg: #ffffff;
+  --menu-bg: #ffffff;
+  --nav-active-circle-bg: #000000; /* light: black circle */
+  --nav-active-icon: #ffffff;      /* light: white icon on black */
+  /* Add button fills (light theme): inactive white fill, active black fill */
+  --add-inactive-bg: #ffffff;
+  --add-inactive-icon: #000000;
+  --add-active-bg: #000000;
+  --add-active-icon: #ffffff;
 }
-
-/* Light mode active button styling */
-html[data-theme="light"] button.active,
-html[data-theme="light"] button:active:not(.icon) {
-  background: chocolate;
-  color: var(--nav-bg);
-  border-color: chocolate;
-}
-html[data-theme="light"] button:hover:not(.icon) {
-  background: chocolate;
-  color: var(--nav-bg);
-  border-color: chocolate;
-}
-
-/* Light mode: remove phone border to avoid light edge around nav */
-/* Keep thin phone border in light mode */
 
 * { box-sizing: border-box; }
 html, body, #app { height: 100%; }

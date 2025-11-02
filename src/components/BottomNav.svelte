@@ -1,5 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { contributor } from '../lib/stores/contributor.js';
 
   export let current = 'home';
   const dispatch = createEventDispatcher();
@@ -11,101 +12,94 @@
   ];
 
   function select(id) { dispatch('select', id); }
-  function onHomeDown() {}
-  function onHomeUp() { select('home'); }
 </script>
 
-<nav class="nav">
-  {#each tabs as t, i}
-    {#if t.id === 'search'}
-      <button
-        class="tab search {current === t.id ? 'active' : ''}"
-        aria-label={t.label}
-        on:click={() => select(t.id)}>
-        <div class="search-circle {current === 'search' ? 'active' : ''}">
-          <svg viewBox="0 0 24 24" width="29" height="29" aria-hidden="true">
-            <circle cx="11" cy="11" r="6" fill="none" stroke={current === 'search' ? 'var(--accent-contrast)' : 'var(--nav-icon)'} stroke-width="2"/>
-            <path d="M20 20l-3.5-3.5" stroke={current === 'search' ? 'var(--accent-contrast)' : 'var(--nav-icon)'} stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </button>
-    {:else if t.id === 'home'}
-      <button
-        class="tab {current === t.id ? 'active' : ''}"
-        aria-label={t.label}
-        on:mousedown={onHomeDown}
-        on:mouseup={onHomeUp}
-        on:mouseleave={onHomeUp}
-        on:touchstart={onHomeDown}
-        on:touchend={onHomeUp}
-        on:touchcancel={onHomeUp}>
-          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-            {#if current === 'home'}
-              <path d="M3 10.5 12 3 21 10.5V21H14V14H10V21H3Z" fill="var(--nav-icon-active)"/>
-            {:else}
-              <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" fill="none" stroke="var(--nav-icon)" stroke-width="2" stroke-linejoin="round"/>
-            {/if}
-          </svg>
-      </button>
-    {:else}
-      <button
-        class="tab {current === t.id ? 'active' : ''}"
-        aria-label={t.label}
-        on:click={() => select(t.id)}>
-          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-            {#if current === 'profile'}
-              <circle cx="12" cy="8" r="4" fill="var(--nav-icon-active)"/>
-              <rect x="4" y="13" width="16" height="8" rx="5" ry="5" fill="var(--nav-icon-active)" />
-            {:else}
-              <circle cx="12" cy="8" r="4" fill="none" stroke="var(--nav-icon)" stroke-width="2"/>
-              <path d="M4 21c1.8-3.5 5-5 8-5s6.2 1.5 8 5" fill="none" stroke="var(--nav-icon)" stroke-width="2" stroke-linecap="round"/>
-            {/if}
-          </svg>
-      </button>
-    {/if}
-  {/each}
-  </nav>
+<nav class="nav" style={`grid-template-columns: repeat(${$contributor ? 4 : 3}, 1fr);`}>
+  <!-- Home -->
+  <button class="tab {current === 'home' ? 'active' : ''}" aria-label="Home" on:click={() => select('home')}>
+    <div class="circle {current === 'home' ? 'active' : ''}">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <span>Home</span>
+  </button>
+
+  <!-- Search -->
+  <button class="tab {current === 'search' ? 'active' : ''}" aria-label="Search" on:click={() => select('search')}>
+    <div class="circle {current === 'search' ? 'active' : ''}">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <circle cx="11" cy="11" r="6" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span>Search</span>
+  </button>
+
+  <!-- Add (contributor only) -->
+  {#if $contributor}
+    <button class="tab add-btn" aria-label="Add" on:click={() => dispatch('add')}>
+      <div class="circle dotted">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <path d="M12 6v12M6 12h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span>Add</span>
+    </button>
+  {/if}
+
+  <!-- Profile -->
+  <button class="tab {current === 'profile' ? 'active' : ''}" aria-label="Profile" on:click={() => select('profile')}>
+    <div class="circle {current === 'profile' ? 'active' : ''}">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M4 21c1.8-3.5 5-5 8-5s6.2 1.5 8 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span>Profile</span>
+  </button>
+</nav>
 
 <style>
   .nav {
     position: sticky;
     bottom: 0;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
     background: var(--nav-bg);
-    border-top: none;
-    padding: 4px 0 6px;
+    padding: 8px 12px 10px;
     width: 100%;
     border-bottom-left-radius: 18px;
     border-bottom-right-radius: 18px;
-    z-index: 20; /* sit above content so taps are not intercepted */
+    z-index: 20;
   }
   .tab {
     display: grid;
-    place-items: center;
-    gap: 2px;
-    padding: 6px 0;
-    color: var(--muted);
+    justify-items: center;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
     background: transparent;
     border: none;
+    color: var(--icon);
     font: inherit;
   }
-  .tab.active span { color: var(--accent-dark); }
-  .tab span { font-size: 11px; }
+  .tab span { font-size: 11px; opacity: 0.7; }
   .tab:active { transform: translateY(1px); }
   svg { display: block; }
 
-  /* Special raised search button */
-  .tab.search { position: relative; }
-  .search-circle {
-    width: 52px; height: 52px;
-    border-radius: 999px;
-    background: var(--nav-bg);
+  .circle {
+    width: 44px; height: 44px;
     display: grid; place-items: center;
-    transform: translateY(-18px);
+    border-radius: 999px;
+    border: 2px solid transparent; /* invisible for inactive */
+    background: transparent;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
   }
-  .search-circle.active { background: var(--nav-icon-active); }
-  .tab.search { position: relative; overflow: visible; }
-  .tab.search span { display: none; }
-  .tab span { display: none; }
+  .circle.active {
+    background: var(--nav-active-circle-bg);
+    color: var(--nav-active-icon);
+    border-color: var(--nav-active-circle-bg);
+  }
+  .add-btn .circle { border-width: 2px; border-style: dotted; border-color: var(--icon); background: var(--add-inactive-bg); color: var(--add-inactive-icon); }
+  .add-btn:active .circle { background: var(--add-active-bg); color: var(--add-active-icon); }
 </style>

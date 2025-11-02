@@ -1,5 +1,6 @@
 <script>
   import { navigate } from '../lib/router.js';
+  import { contributor } from '../lib/stores/contributor.js';
   const user = {
     username: '@majed',
     name: 'Majed Bashir',
@@ -11,6 +12,11 @@
 <header class="bar">
   <div class="row between center">
     <div class="left">
+      {#if $contributor}
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M12 2l2.6 4.9 5.4.8-3.9 3.8.9 5.4L12 14.8 7 17l.9-5.4L4 7.7l5.4-.8L12 2z" fill="var(--icon)"/>
+        </svg>
+      {/if}
       <strong>{user.username}</strong>
       <button class="icon" aria-label="Edit username">
         <svg viewBox="0 0 24 24" width="18" height="18">
@@ -18,15 +24,19 @@
         </svg>
       </button>
     </div>
-    <button class="icon" aria-label="Settings" on:click={() => navigate('settings')}>
-      <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
-        <g fill="none" stroke="var(--icon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="4"/>
-          <circle cx="12" cy="12" r="8"/>
-          <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M19.07 4.93l-1.41 1.41M6.34 17.66l-1.41 1.41"/>
-        </g>
-      </svg>
-    </button>
+    <div class="right">
+      <button class="icon" aria-label="Activity" title="Activity" on:click={() => navigate('activity')}>
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+          <path d="M3 13h4l2-6 4 12 2-6h4" fill="none" stroke="var(--icon)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="icon" aria-label="Settings" on:click={() => navigate('settings')}>
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+          <path d="M19.4 15a2 2 0 0 0 0-6l1.2-2.1-2-3.5-2.4.5a6 6 0 0 0-1.2-.7L14.6 1h-5.2l-.4 2.2a6 6 0 0 0-1.2.7l-2.4-.5-2 3.5L4.6 9a2 2 0 0 0 0 6l-1.2 2.1 2 3.5 2.4-.5a6 6 0 0 0 1.2.7l.4 2.2h5.2l.4-2.2c.4-.2.8-.4 1.2-.7l2.4.5 2-3.5z" fill="none" stroke="var(--icon)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="12" cy="12" r="3.5" fill="none" stroke="var(--icon)" stroke-width="1.6"/>
+        </svg>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -42,15 +52,7 @@
     </div>
   </div>
 
-  <h2>Bookmarks</h2>
-  <div class="list">
-    <div class="empty">No bookmarks yet.</div>
-  </div>
-
-  <h2>Likes</h2>
-  <div class="list">
-    <div class="empty">No likes yet.</div>
-  </div>
+  <!-- Moved Likes and Bookmarks into Activity page -->
 </section>
 
 <style>
