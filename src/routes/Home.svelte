@@ -3,7 +3,8 @@
   import { fly } from 'svelte/transition';
   import VideoReel from '../components/VideoReel.svelte';
   import { activity, toggleBookmarkVideo, toggleLikeVideo } from '../lib/stores/activity.js';
-  import { reels as reelsStore, addReel, removeReel } from '../lib/stores/feed.js';
+  import { reels as reelsStore, addReel, removeReel, restoreReel } from '../lib/stores/feed.js';
+  import { push as pushToast } from '../lib/stores/toast.js';
   import { contributor } from '../lib/stores/contributor.js';
   
   const videos = Array.from({ length: 4 }).map((_, i) => ({ id: i + 1, title: 'Islamic Reminder', author: 'Ustadh • @channel', duration: '1:23' }));
@@ -24,7 +25,7 @@
 <!-- Header removed per new UI spec -->
 
 
-  <section class="feed">
+  <section class="feed reels">
     {#each reels as r}
       <article class="card">
         <VideoReel
@@ -36,7 +37,7 @@
           on:active={(e) => activeId = e.detail.id}
           on:mutetoggle={(e) => globalMuted = e.detail.muted}
           on:dblclick={() => toggleLikeVideo(r.id)}
-          on:delete={() => { if (activeId === r.id) activeId = null; if (shareFor === r.id) { showShare = false; shareFor = null; } removeReel(r.id); }}
+          on:delete={() => { const removed = r; if (activeId === r.id) activeId = null; if (shareFor === r.id) { showShare = false; shareFor = null; } removeReel(r.id); pushToast('Video deleted', { action: { label: 'Undo', handler: () => restoreReel(removed) }, timeout: 4000 }); }}
         />
 
         <div class="actions">
@@ -95,14 +96,14 @@
           <span>Messages</span>
         </button>
         <button class="share-item" aria-label="Bookmark" title="Bookmark"
-                on:click={() => { if (shareFor != null) toggleBookmarkVideo(shareFor); showShare = false; }}>
+                on:click={() => { if (shareFor != null) { const willSave = !$activity.bookmarks.videos.includes(shareFor); toggleBookmarkVideo(shareFor); pushToast(willSave ? 'Saved to bookmarks' : 'Removed from bookmarks'); } showShare = false; }}>
           <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
             <path d="M6.5 5.5h11a1 1 0 0 1 1 1v13l-6.5-4.2-6.5 4.2v-13a1 1 0 0 1 1-1" fill="currentColor" />
           </svg>
           <span>Bookmark</span>
         </button>
         <button class="share-item" aria-label="Copy Link" title="Copy Link"
-                on:click={async () => { try { await navigator.clipboard.writeText(reels.find(x=>x.id===shareFor)?.src || ''); } catch {}; showShare = false; }}>
+                on:click={async () => { try { await navigator.clipboard.writeText(reels.find(x=>x.id===shareFor)?.src || ''); pushToast('Link copied'); } catch {}; showShare = false; }}>
           <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
             <path d="M10 13a5 5 0 0 1 0-7l2-2a5 5 0 1 1 7 7l-1 1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             <path d="M14 11a5 5 0 0 1 0 7l-2 2a5 5 0 1 1-7-7l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>

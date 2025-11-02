@@ -213,8 +213,8 @@
     stopRaf();
     if (video) {
       try { video.pause(); } catch {}
-      try { if (typeof video.src === 'string' && video.src.startsWith('blob:')) URL.revokeObjectURL(video.src); } catch {}
-      try { video.src = video.src; } catch {}
+      try { video.currentTime = 0; } catch {}
+      // do not revoke blob URL here to allow restore/other views to reuse it
     }
   });
 </script>

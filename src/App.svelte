@@ -11,6 +11,7 @@
   import Activity from './routes/Activity.svelte';
   import BottomNav from './components/BottomNav.svelte';
   import { overlay as overlayStore } from './lib/stores/overlay.js';
+  import ToastStack from './components/ToastStack.svelte';
 
   $: current = $route;
   $: dir = $nav; // 'neutral' | 'forward' | 'back'
@@ -90,6 +91,8 @@
     </div>
   </div>
 {/if}
+
+<ToastStack />
 
 <style>
   .phone {

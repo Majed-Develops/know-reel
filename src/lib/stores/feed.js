@@ -23,3 +23,24 @@ export function addReel(src, caption = '') {
 export function removeReel(id) {
   reels.update((arr) => arr.filter((r) => r.id !== id));
 }
+
+export function restoreReel(item) {
+  if (!item) return;
+  reels.update((arr) => [item, ...arr]);
+}
+
+export function setPinned(id) {
+  reels.update((arr) => {
+    let found = false;
+    const next = arr.map((r) => {
+      if (r.id === id) { found = true; return { ...r, pinned: true }; }
+      return r.pinned ? { ...r, pinned: false } : r;
+    });
+    return next;
+  });
+}
+
+export function updateCaption(id, caption) {
+  const text = (caption || '').trim();
+  reels.update((arr) => arr.map((r) => (r.id === id ? { ...r, caption: text } : r)));
+}
