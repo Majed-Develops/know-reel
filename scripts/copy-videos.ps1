@@ -15,7 +15,6 @@ $map = @(
   @{ i = 5; name = 'You Can Never Count the Favours of Allah  #shorts.mp4' }
   @{ i = 6; name = 'Remember Allah Often.mp4' }
   @{ i = 7; name = 'A Reminder Dear Muslims.mp4' }
-  @{ i = 8; name = 'Love in Action.mp4' }
   @{ i = 9; name = 'Signs of a Hypocrite.mp4' }
   @{ i = 10; name = 'Sharing News Responsibly.mp4' }
 )
@@ -39,9 +38,8 @@ foreach ($m in $map) {
   }
 }
 
-Write-Host ""; Write-Host ("Copied {0}/10 files." -f $copied) -ForegroundColor Yellow
+Write-Host ""; Write-Host ("Copied {0}/{1} files." -f $copied, $map.Count) -ForegroundColor Yellow
 Write-Host "Files now in public\\videos:" -ForegroundColor Cyan
 Get-ChildItem -File $destDir | Format-Table Name, Length -AutoSize
 
 Write-Host ""; Write-Host "Next: npm run dev, then open Home." -ForegroundColor Cyan
-

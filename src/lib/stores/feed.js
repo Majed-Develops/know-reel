@@ -8,7 +8,6 @@ const base = [
   { id: 5, src: '/videos/5.mp4' },
   { id: 6, src: '/videos/6.mp4' },
   { id: 7, src: '/videos/7.mp4' },
-  { id: 8, src: '/videos/8.mp4' },
   { id: 9, src: '/videos/9.mp4' },
   { id: 10, src: '/videos/10.mp4' }
 ];
