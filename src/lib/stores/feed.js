@@ -1,6 +1,8 @@
 import { writable } from 'svelte/store';
 
 const base = [
+  { id: 12, src: '/videos/12.mp4', caption: 'Maryam (71) Explanation' },
+  { id: 11, src: '/videos/11.mp4', caption: 'Al Baqara (7) Explanation about Non-Muslims and whatever they believe in' },
   { id: 1, src: '/videos/1.mp4' },
   { id: 2, src: '/videos/2.mp4' },
   { id: 3, src: '/videos/3.mp4' },

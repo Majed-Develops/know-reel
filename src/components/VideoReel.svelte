@@ -308,7 +308,7 @@
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
-    background: linear-gradient(180deg, #1a1d1f, #0f1113);
+    background: #000; /* ensure any gaps are black */
   }
   .more {
     position: absolute;
@@ -341,10 +341,14 @@
   }
   .menu .item:active { background: var(--border); }
   .video {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center center;
     display: block;
+    background: #000; /* avoid faint background edges on some devices */
   }
   .progress {
     position: absolute;

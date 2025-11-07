@@ -9,6 +9,8 @@
     { "id": 7,  "name": "7.mp4",  "src": "/videos/7.mp4" },
     { "id": 8,  "name": "8.mp4",  "src": "/videos/8.mp4" },
     { "id": 9,  "name": "9.mp4",  "src": "/videos/9.mp4" },
-    { "id": 10, "name": "10.mp4", "src": "/videos/10.mp4" }
+    { "id": 10, "name": "10.mp4", "src": "/videos/10.mp4" },
+    { "id": 11, "name": "11.mp4", "src": "/videos/11.mp4" },
+    { "id": 12, "name": "12.mp4", "src": "/videos/12.mp4" }
   ]
 }
