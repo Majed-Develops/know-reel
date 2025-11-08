@@ -28,6 +28,8 @@
   let startX = 0, startY = 0;
   const MOVE_CANCEL_PX = 12; // cancel tap if user scrolls/drags more than this
   let lastVisible = false;
+  // Lazy-load: only set video src when first visible
+  let hasLoadedSrc = false;
 
   function startRaf() {
     stopRaf();
@@ -142,6 +144,10 @@
       const visible = entry.intersectionRatio >= 0.5;
       if (visible) {
         if ($overlayStore) { lastVisible = true; return; }
+        // Ensure src is attached the first time the reel becomes visible
+        if (video && !hasLoadedSrc) {
+          try { video.preload = 'metadata'; video.src = src; hasLoadedSrc = true; } catch {}
+        }
         // restart from beginning when becoming visible again
         if (!lastVisible && video) {
           try { video.currentTime = 0; } catch {}
@@ -183,6 +189,10 @@
         const visible = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0));
         const ratio = visible / Math.max(1, rect.height);
         if (ratio >= 0.5 && !$overlayStore) {
+          // Attach src if not yet loaded
+          if (!hasLoadedSrc) {
+            try { video.preload = 'metadata'; video.src = src; hasLoadedSrc = true; } catch {}
+          }
           video.muted = muted;
           video.play().catch(() => {});
           dispatch('active', { id });
@@ -238,12 +248,11 @@
     <video
       bind:this={video}
       class="video"
-      src={src}
       {poster}
       autoplay
       playsinline
       webkit-playsinline
-      preload="metadata"
+      preload="none"
       muted
       loop
       on:loadedmetadata={() => { try { duration = video?.duration || 0; } catch {} }}

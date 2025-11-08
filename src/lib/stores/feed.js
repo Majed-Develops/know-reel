@@ -1,15 +1,18 @@
 import { writable } from 'svelte/store';
 
+// Use faster remote video URLs
+const BASE_URL = 'https://raw.githubusercontent.com/Majed-Develops/know-reel/refs/heads/main/public/videos';
+const u = (n) => `${BASE_URL}/${n}.mp4`;
 const base = [
-  { id: 1, src: '/videos/1.mp4' },
-  { id: 2, src: '/videos/2.mp4' },
-  { id: 3, src: '/videos/3.mp4' },
-  { id: 4, src: '/videos/4.mp4' },
-  { id: 5, src: '/videos/5.mp4' },
-  { id: 6, src: '/videos/6.mp4' },
-  { id: 7, src: '/videos/7.mp4' },
-  { id: 9, src: '/videos/9.mp4' },
-  { id: 10, src: '/videos/10.mp4' }
+  { id: 1, src: u(1) },
+  { id: 2, src: u(2) },
+  { id: 3, src: u(3) },
+  { id: 4, src: u(4) },
+  { id: 5, src: u(5) },
+  { id: 6, src: u(6) },
+  { id: 7, src: u(7) },
+  { id: 9, src: u(9) },
+  { id: 10, src: u(10) }
 ];
 
 export const reels = writable(base);

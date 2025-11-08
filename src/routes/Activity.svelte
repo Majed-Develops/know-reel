@@ -9,10 +9,11 @@
 
   const openLikes = () => mode = 'likes';
   const openBookmarks = () => mode = 'bookmarks';
+  const REMOTE_BASE = 'https://raw.githubusercontent.com/Majed-Develops/know-reel/refs/heads/main/public/videos';
   const videoSrcById = (id) => {
     const r = $reelsStore.find((x) => x.id === id);
     if (r) return r.src;
-    if (typeof id === 'number') return `/videos/${id}.mp4`;
+    if (typeof id === 'number') return `${REMOTE_BASE}/${id}.mp4`;
     return String(id);
   };
   const openViewer = (src) => viewer = { src };
