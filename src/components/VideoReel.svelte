@@ -13,6 +13,7 @@
   let frame;
   let video;
   let observer;
+  let rootEl = null; // scroll container root for IntersectionObserver (iOS Safari fix)
   let showIndicator = false;
   let indicator = 'muted'; // 'muted' | 'unmuted'
   let indicatorTimer;
@@ -62,6 +63,8 @@
   }
 
   function onPointerDown(e) {
+    // User interaction fallback: ensure the src is attached on first touch/click (helps iOS Safari)
+    ensureSrcAttached();
     clearTimeout(holdTimer);
     holding = false;
     pressing = true;
@@ -138,6 +141,21 @@
     startRaf();
   }
 
+  function ensureSrcAttached() {
+    if (video && !hasLoadedSrc) {
+      try {
+        // Ensure autoplay-friendly flags are present for iOS Safari
+        video.muted = muted;
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('preload', 'metadata');
+        video.src = src;
+        if (typeof video.load === 'function') { video.load(); }
+        hasLoadedSrc = true;
+      } catch {}
+    }
+  }
+
   function handleVisibility(entries) {
     for (const entry of entries) {
       if (entry.target !== container) continue;
@@ -145,9 +163,7 @@
       if (visible) {
         if ($overlayStore) { lastVisible = true; return; }
         // Ensure src is attached the first time the reel becomes visible
-        if (video && !hasLoadedSrc) {
-          try { video.preload = 'metadata'; video.src = src; hasLoadedSrc = true; } catch {}
-        }
+        ensureSrcAttached();
         // restart from beginning when becoming visible again
         if (!lastVisible && video) {
           try { video.currentTime = 0; } catch {}
@@ -174,8 +190,11 @@
 
   onMount(() => {
     if (video) { video.muted = muted; }
+    // Use the nearest scroll container as the root if present
+    try { rootEl = container?.closest?.('.content') || null; } catch {}
     observer = new IntersectionObserver(handleVisibility, {
-      root: null,
+      root: rootEl,
+      rootMargin: '25% 0px',
       threshold: [0, 0.5, 1]
     });
     if (container) observer.observe(container);
@@ -185,14 +204,14 @@
       try {
         if (!container || !video) return;
         const rect = container.getBoundingClientRect();
-        const vh = window.innerHeight || document.documentElement.clientHeight;
-        const visible = Math.max(0, Math.min(rect.bottom, vh) - Math.max(rect.top, 0));
+        const rootRect = rootEl ? rootEl.getBoundingClientRect() : null;
+        const viewTop = rootRect ? rootRect.top : 0;
+        const viewBottom = rootRect ? rootRect.bottom : (window.innerHeight || document.documentElement.clientHeight);
+        const visible = Math.max(0, Math.min(rect.bottom, viewBottom) - Math.max(rect.top, viewTop));
         const ratio = visible / Math.max(1, rect.height);
         if (ratio >= 0.5 && !$overlayStore) {
           // Attach src if not yet loaded
-          if (!hasLoadedSrc) {
-            try { video.preload = 'metadata'; video.src = src; hasLoadedSrc = true; } catch {}
-          }
+          ensureSrcAttached();
           video.muted = muted;
           video.play().catch(() => {});
           dispatch('active', { id });
@@ -201,6 +220,9 @@
         }
       } catch {}
     }, 0);
+
+    // Fallback: if IO doesn't fire quickly on Safari, attach src shortly after mount
+    setTimeout(() => { try { if (!hasLoadedSrc) ensureSrcAttached(); } catch {} }, 1200);
 
     function onPlay() { startRaf(); dispatch('active', { id }); }
     function onPause() { stopRaf(); }
@@ -218,6 +240,7 @@
 
   onDestroy(() => {
     if (observer && container) observer.unobserve(container);
+    if (observer && observer.disconnect) observer.disconnect();
     clearTimeout(indicatorTimer);
     clearTimeout(holdTimer);
     stopRaf();
