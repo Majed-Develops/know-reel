@@ -13,7 +13,7 @@
   let frame;
   let video;
   let observer;
-  let rootEl = null; // scroll container root for IntersectionObserver (iOS Safari fix)
+  let rootEl = null; // may use viewport; keep var for potential future use
   let showIndicator = false;
   let indicator = 'muted'; // 'muted' | 'unmuted'
   let indicatorTimer;
@@ -148,6 +148,9 @@
         video.muted = muted;
         video.setAttribute('playsinline', '');
         video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('crossorigin', 'anonymous');
+        // Preload metadata first; browsers may still fetch quickly once playing
+        video.preload = 'metadata';
         video.setAttribute('preload', 'metadata');
         video.src = src;
         if (typeof video.load === 'function') { video.load(); }
@@ -176,7 +179,7 @@
       } else {
         if (video) {
           try { video.pause(); } catch {}
-          try { video.currentTime = 0; } catch {}
+          // Avoid resetting to 0 to prevent thrash at boundaries
         }
       }
       lastVisible = visible;
@@ -190,12 +193,12 @@
 
   onMount(() => {
     if (video) { video.muted = muted; }
-    // Use the nearest scroll container as the root if present
-    try { rootEl = container?.closest?.('.content') || null; } catch {}
+    // Use viewport as root. iOS Safari has known issues with non-viewport roots.
+    rootEl = null;
     observer = new IntersectionObserver(handleVisibility, {
-      root: rootEl,
-      rootMargin: '25% 0px',
-      threshold: [0, 0.5, 1]
+      root: null,
+      rootMargin: '100px 0px',
+      threshold: [0, 0.6, 1]
     });
     if (container) observer.observe(container);
 
@@ -204,12 +207,11 @@
       try {
         if (!container || !video) return;
         const rect = container.getBoundingClientRect();
-        const rootRect = rootEl ? rootEl.getBoundingClientRect() : null;
-        const viewTop = rootRect ? rootRect.top : 0;
-        const viewBottom = rootRect ? rootRect.bottom : (window.innerHeight || document.documentElement.clientHeight);
+        const viewTop = 0;
+        const viewBottom = (window.innerHeight || document.documentElement.clientHeight);
         const visible = Math.max(0, Math.min(rect.bottom, viewBottom) - Math.max(rect.top, viewTop));
         const ratio = visible / Math.max(1, rect.height);
-        if (ratio >= 0.5 && !$overlayStore) {
+        if (ratio >= 0.6 && !$overlayStore) {
           // Attach src if not yet loaded
           ensureSrcAttached();
           video.muted = muted;
@@ -221,8 +223,8 @@
       } catch {}
     }, 0);
 
-    // Fallback: if IO doesn't fire quickly on Safari, attach src shortly after mount
-    setTimeout(() => { try { if (!hasLoadedSrc) ensureSrcAttached(); } catch {} }, 1200);
+    // Conservative fallback: attach src after short delay if nothing fired yet
+    setTimeout(() => { try { if (!hasLoadedSrc) ensureSrcAttached(); } catch {} }, 800);
 
     function onPlay() { startRaf(); dispatch('active', { id }); }
     function onPause() { stopRaf(); }
@@ -272,6 +274,7 @@
       bind:this={video}
       class="video"
       {poster}
+      crossorigin="anonymous"
       autoplay
       playsinline
       webkit-playsinline

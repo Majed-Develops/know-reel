@@ -1,7 +1,11 @@
 import { writable } from 'svelte/store';
 
-// Use faster remote video URLs
-const BASE_URL = 'https://raw.githubusercontent.com/Majed-Develops/know-reel/refs/heads/main/public/videos';
+// Use a CDN-backed URL for faster delivery
+// Primary: jsDelivr (GitHub release CDN). Fallback to raw if needed.
+const CDN_BASE = 'https://cdn.jsdelivr.net/gh/Majed-Develops/know-reel@main/public/videos';
+const RAW_BASE = 'https://raw.githubusercontent.com/Majed-Develops/know-reel/refs/heads/main/public/videos';
+// Revert to RAW for stability while investigating loading issues
+const BASE_URL = RAW_BASE;
 const u = (n) => `${BASE_URL}/${n}.mp4`;
 const base = [
   { id: 1, src: u(1) },
