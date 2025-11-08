@@ -20,6 +20,18 @@
   let showShare = false;
   let shareFor = null; // video id for share actions
   // contributor inline URL post removed; use Add flow in navbar
+
+  // Preload the upcoming video's source to reduce startup latency
+  let preloaderEl;
+  $: preloadSrc = (() => {
+    const arr = reels;
+    if (!arr || arr.length === 0) return null;
+    if (activeId == null) return arr[0]?.src ?? null;
+    const idx = arr.findIndex((r) => r.id === activeId);
+    if (idx >= 0 && idx < arr.length - 1) return arr[idx + 1]?.src ?? null;
+    return null;
+  })();
+  $: if (preloaderEl && preloadSrc) { try { preloaderEl.load?.(); } catch {} }
 </script>
 
 <!-- Header removed per new UI spec -->
@@ -76,6 +88,20 @@
       </article>
     {/each}
   </section>
+
+  {#if preloadSrc}
+    <!-- Hidden preloader for the next reel to warm cache & connection -->
+    <video
+      bind:this={preloaderEl}
+      src={preloadSrc}
+      preload="auto"
+      muted
+      playsinline
+      webkit-playsinline
+      crossorigin="anonymous"
+      style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;z-index:-1;"
+    />
+  {/if}
 
 {#if showShare}
   <div class="share-overlay" on:click={() => { showShare = false; shareFor = null; }}>
